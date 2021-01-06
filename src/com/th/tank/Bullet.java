@@ -11,7 +11,7 @@ public class Bullet {
     public static final int WIDTH = ResourceMgr.bulletD.getWidth();
     public static final int HEIGHT = ResourceMgr.bulletD.getHeight();
     private int x, y;
-    private boolean live = true;
+    private boolean living = true;
     private Dir dir = Dir.DOWN;
     private TankFrame tf;
 
@@ -22,16 +22,16 @@ public class Bullet {
         this.tf = tf;
     }
 
-    public boolean isLive() {
-        return live;
+    public boolean isLiving() {
+        return living;
     }
 
-    public void setLive(boolean live) {
-        this.live = live;
+    public void setLiving(boolean living) {
+        this.living = living;
     }
 
     public void paint(Graphics g) {
-        if (!isLive())
+        if (!isLiving())
             tf.bullets.remove(this);
 //        g.setColor(Color.RED);
 //        g.fillOval(x, y, WIDTH, HEIGHT);
@@ -68,6 +68,19 @@ public class Bullet {
                 break;
         }
         if (x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT)
-            live = false;
+            living = false;
+    }
+
+    public void collideWith(Tank tank) {
+        Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
+        Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
+        if (rect1.intersects(rect2)) {
+            tank.die();
+            this.die();
+        }
+    }
+
+    private void die() {
+        this.living = false;
     }
 }
