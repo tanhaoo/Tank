@@ -12,7 +12,7 @@ public class Main {
         TankFrame tf = new TankFrame();
         //初始化敌方坦克
         for (int i = 0; i < 5; i++) {
-            tf.tanks.add(new Tank(50 + i * 100, 200, Dir.DOWN, tf));
+            tf.tanks.add(new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD,tf));
         }
         while (true) {
             try {
