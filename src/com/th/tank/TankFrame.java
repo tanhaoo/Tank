@@ -21,6 +21,7 @@ public class TankFrame extends Frame {
     Tank myTank = new Tank(GAME_WIDTH / 2 - Tank.WIDTH / 2, GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD, this);
 
     public TankFrame() {
+        myTank.setMoving(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setResizable(false);
         setTitle("Tank War");

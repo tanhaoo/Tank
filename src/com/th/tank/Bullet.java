@@ -15,6 +15,7 @@ public class Bullet {
     private Dir dir = Dir.DOWN;
     private Group group = Group.BAD;
     private TankFrame tf;
+    private Rectangle rect = new Rectangle();
 
     public Bullet(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
@@ -22,22 +23,10 @@ public class Bullet {
         this.dir = dir;
         this.tf = tf;
         this.group = group;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public boolean isLiving() {
-        return living;
-    }
-
-    public void setLiving(boolean living) {
-        this.living = living;
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
     }
 
     public void paint(Graphics g) {
@@ -77,6 +66,10 @@ public class Bullet {
                 y += SPEED;
                 break;
         }
+        //update rect
+        rect.x = this.x;
+        rect.y = this.y;
+
         if (x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT)
             living = false;
     }
@@ -84,9 +77,7 @@ public class Bullet {
     public void collideWith(Tank tank) {
         if (this.group == tank.getGroup()) return;
 
-        Rectangle rect1 = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
-        Rectangle rect2 = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
-        if (rect1.intersects(rect2)) {
+        if (rect.intersects(tank.getRect())) {
             tank.die();
             this.die();
             int eX = tank.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
@@ -98,4 +89,21 @@ public class Bullet {
     private void die() {
         this.living = false;
     }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public boolean isLiving() {
+        return living;
+    }
+
+    public void setLiving(boolean living) {
+        this.living = living;
+    }
+
 }

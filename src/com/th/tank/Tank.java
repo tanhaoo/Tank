@@ -18,6 +18,87 @@ public class Tank {
     private boolean living = true;
     private Random random = new Random();
     private Group group = Group.BAD;
+    private Rectangle rect = new Rectangle();
+
+    public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+        this.tf = tf;
+        this.group = group;
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
+    }
+
+    public void paint(Graphics g) {
+//        g.setColor(Color.BLACK);
+//        g.fillRect(x, y, WIDTH, HEIGHT);
+        if (!living) tf.tanks.remove(this);
+        switch (dir) {
+            case DOWN:
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
+                break;
+            case UP:
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankU : ResourceMgr.badTankU, x, y, null);
+                break;
+            case LEFT:
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankL : ResourceMgr.badTankL, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankR : ResourceMgr.badTankR, x, y, null);
+                break;
+        }
+        move();
+    }
+
+    private void move() {
+        if (!isMoving()) return;
+        switch (dir) {
+            case LEFT:
+                x -= SPEED;
+                break;
+            case RIGHT:
+                x += SPEED;
+                break;
+            case UP:
+                y -= SPEED;
+                break;
+            case DOWN:
+                y += SPEED;
+                break;
+        }
+        if (this.group == Group.BAD && random.nextInt(100) > 95) {
+            randomDir();
+            this.fire();
+        }
+        boundsCheck();
+        //update rect
+        rect.x = this.x;
+        rect.y = this.y;
+    }
+
+    private void boundsCheck() {
+        if (this.x < 2) x = 2;
+        if (this.y < 28) y = 28;
+        if (this.x > TankFrame.GAME_WIDTH - Tank.WIDTH) x = TankFrame.GAME_WIDTH - Tank.WIDTH;
+        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT) y = TankFrame.GAME_HEIGHT - Tank.HEIGHT;
+    }
+
+    private void randomDir() {
+        this.dir = Dir.values()[random.nextInt(4)];
+    }
+
+    public void fire() {
+        int bX = this.x + Tank.WIDTH / 2 - Bullet.WIDTH / 2;
+        int bY = this.y + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
+        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group, this.tf));
+    }
+
+    public void die() {
+        this.living = false;
+    }
 
     public boolean isLiving() {
         return living;
@@ -71,68 +152,11 @@ public class Tank {
         return SPEED;
     }
 
-    public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
-        this.x = x;
-        this.y = y;
-        this.dir = dir;
-        this.tf = tf;
-        this.group = group;
+    public Rectangle getRect() {
+        return rect;
     }
 
-    public void paint(Graphics g) {
-//        g.setColor(Color.BLACK);
-//        g.fillRect(x, y, WIDTH, HEIGHT);
-        if (!living) tf.tanks.remove(this);
-        switch (dir) {
-            case DOWN:
-                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
-                break;
-            case UP:
-                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankU : ResourceMgr.badTankU, x, y, null);
-                break;
-            case LEFT:
-                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankL : ResourceMgr.badTankL, x, y, null);
-                break;
-            case RIGHT:
-                g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankR : ResourceMgr.badTankR, x, y, null);
-                break;
-        }
-        move();
-    }
-
-    private void move() {
-        if (!isMoving()) return;
-        switch (dir) {
-            case LEFT:
-                x -= SPEED;
-                break;
-            case RIGHT:
-                x += SPEED;
-                break;
-            case UP:
-                y -= SPEED;
-                break;
-            case DOWN:
-                y += SPEED;
-                break;
-        }
-        if (this.group == Group.BAD && random.nextInt(100) > 95) {
-            randomDir();
-            this.fire();
-        }
-    }
-
-    private void randomDir() {
-        this.dir = Dir.values()[random.nextInt(4)];
-    }
-
-    public void fire() {
-        int bX = this.x + Tank.WIDTH / 2 - Bullet.WIDTH / 2;
-        int bY = this.y + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
-        tf.bullets.add(new Bullet(bX, bY, this.dir, this.group, this.tf));
-    }
-
-    public void die() {
-        this.living = false;
+    public void setRect(Rectangle rect) {
+        this.rect = rect;
     }
 }
