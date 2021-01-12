@@ -1,15 +1,14 @@
-package com.th.tank;
+package com.th.tank.abstractfactory;
 
-import com.th.tank.abstractfactory.BaseBullet;
-import com.th.tank.abstractfactory.BaseTank;
+import com.th.tank.*;
 
 import java.awt.*;
 
 /**
  * @author TanHaooo
- * @date 2020/12/29 2:07
+ * @date 2021/1/12 18:17
  */
-public class Bullet extends BaseBullet {
+public class RectBullet extends BaseBullet {
     private static final int SPEED = 10;
     public static final int WIDTH = ResourceMgr.bulletD.getWidth();
     public static final int HEIGHT = ResourceMgr.bulletD.getHeight();
@@ -20,7 +19,7 @@ public class Bullet extends BaseBullet {
     private TankFrame tf;
     private Rectangle rect = new Rectangle();
 
-    public Bullet(int x, int y, Dir dir, Group group, TankFrame tf) {
+    public RectBullet(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -38,22 +37,11 @@ public class Bullet extends BaseBullet {
     public void paint(Graphics g) {
         if (!isLiving())
             tf.bullets.remove(this);
-//        g.setColor(Color.RED);
-//        g.fillOval(x, y, WIDTH, HEIGHT);
-        switch (dir) {
-            case DOWN:
-                g.drawImage(ResourceMgr.bulletD, x, y, null);
-                break;
-            case UP:
-                g.drawImage(ResourceMgr.bulletU, x, y, null);
-                break;
-            case LEFT:
-                g.drawImage(ResourceMgr.bulletL, x, y, null);
-                break;
-            case RIGHT:
-                g.drawImage(ResourceMgr.bulletR, x, y, null);
-                break;
-        }
+        Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.fillRect(x, y, WIDTH, HEIGHT);
+        g.setColor(c);
+
         move();
     }
 
@@ -111,5 +99,4 @@ public class Bullet extends BaseBullet {
     public void setLiving(boolean living) {
         this.living = living;
     }
-
 }

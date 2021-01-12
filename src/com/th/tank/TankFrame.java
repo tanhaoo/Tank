@@ -1,5 +1,7 @@
 package com.th.tank;
 
+import com.th.tank.abstractfactory.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -14,11 +16,14 @@ public class TankFrame extends Frame {
     boolean bU = false;
     boolean bR = false;
     boolean bD = false;
-    static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
-    List<Bullet> bullets = new ArrayList<Bullet>();
-    List<Tank> tanks = new ArrayList<>();
-    List<Explode> explodes = new ArrayList<>();
+    public static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
+    public List<BaseBullet> bullets = new ArrayList<>();
+    public List<BaseTank> tanks = new ArrayList<>();
+    public List<BaseExplode> explodes = new ArrayList<>();
     Tank myTank = new Tank(GAME_WIDTH / 2 - Tank.WIDTH / 2, GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD, this);
+
+    //Init Factory
+    public GameFactory gf = new RectFactory();
 
     public TankFrame() {
         myTank.setMoving(false);

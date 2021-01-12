@@ -9,6 +9,9 @@ import java.io.IOException;
  * @date 2021/1/3 15:11
  */
 public class ResourceMgr {
+    private ResourceMgr() {
+    }
+
     public static BufferedImage goodTankL, goodTankU, goodTankR, goodTankD;
     public static BufferedImage badTankL, badTankU, badTankR, badTankD;
     public static BufferedImage bulletL, bulletU, bulletR, bulletD;
