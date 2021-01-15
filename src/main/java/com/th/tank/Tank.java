@@ -1,5 +1,7 @@
 package com.th.tank;
 
+import com.th.strategy.FireStrategy;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -19,7 +21,8 @@ public class Tank {
     private Random random = new Random();
     private Group group = Group.BAD;
     private Rectangle rect = new Rectangle();
-    GameModel gm;
+    private FireStrategy fs;
+    public GameModel gm;
 
     public Tank(int x, int y, Dir dir, Group group, GameModel gm) {
         this.x = x;
@@ -31,6 +34,16 @@ public class Tank {
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
+        try {
+            fs = (group == Group.GOOD ? (FireStrategy) Class.forName((String) PropertyMgr.get("goodFS")).newInstance()
+                    : (FireStrategy) Class.forName((String) PropertyMgr.get("badFS")).newInstance());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void paint(Graphics g) {
@@ -92,9 +105,7 @@ public class Tank {
     }
 
     public void fire() {
-        int bX = this.x + Tank.WIDTH / 2 - Bullet.WIDTH / 2;
-        int bY = this.y + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
-        new Bullet(bX, bY, this.dir, this.group, this.gm);
+        fs.fire(this);
     }
 
     public void die() {

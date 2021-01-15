@@ -14,7 +14,7 @@ public class Bullet {
     private boolean living = true;
     private Dir dir = Dir.DOWN;
     private Group group = Group.BAD;
-    private GameModel gm;
+    public GameModel gm;
     private Rectangle rect = new Rectangle();
 
     public Bullet(int x, int y, Dir dir, Group group, GameModel gm) {
