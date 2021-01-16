@@ -12,8 +12,8 @@ public class TankTankCollider implements Collider {
     public boolean collide(GameObject o1, GameObject o2) {
         if (o1 instanceof Tank && o2 instanceof Tank) {
             if (((Tank) o1).getRect().intersects(((Tank) o2).getRect())) {
-                ((Tank) o1).stop();
-                ((Tank) o2).stop();
+                ((Tank) o1).back();
+                ((Tank) o2).back();
             }
         }
         return true;

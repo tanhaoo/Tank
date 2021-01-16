@@ -75,21 +75,21 @@ public class Bullet extends GameObject {
             living = false;
     }
 
-    public boolean collideWith(Tank tank) {
-        if (this.group == tank.getGroup()) return false;
+//    public boolean collideWith(Tank tank) {
+//        if (this.group == tank.getGroup()) return false;
+//
+//        if (rect.intersects(tank.getRect())) {
+//            tank.die();
+//            this.die();
+//            int eX = tank.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
+//            int eY = tank.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
+//            gm.add(new Explode(eX, eY, gm));
+//            return true;
+//        }
+//        return false;
+//    }
 
-        if (rect.intersects(tank.getRect())) {
-            tank.die();
-            this.die();
-            int eX = tank.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
-            int eY = tank.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
-            gm.add(new Explode(eX, eY, gm));
-            return true;
-        }
-        return false;
-    }
-
-    private void die() {
+    public void die() {
         this.living = false;
     }
 
@@ -109,4 +109,11 @@ public class Bullet extends GameObject {
         this.living = living;
     }
 
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public void setRect(Rectangle rect) {
+        this.rect = rect;
+    }
 }

@@ -104,7 +104,7 @@ public class Tank extends GameObject {
         if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT) y = TankFrame.GAME_HEIGHT - Tank.HEIGHT;
     }
 
-    public void stop() {
+    public void back() {
         this.x = oldX;
         this.y = oldY;
     }
@@ -179,5 +179,13 @@ public class Tank extends GameObject {
 
     public void setRect(Rectangle rect) {
         this.rect = rect;
+    }
+
+    public GameModel getGm() {
+        return gm;
+    }
+
+    public void setGm(GameModel gm) {
+        this.gm = gm;
     }
 }
