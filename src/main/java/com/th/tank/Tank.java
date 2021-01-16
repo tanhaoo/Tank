@@ -1,5 +1,6 @@
 package com.th.tank;
 
+import com.th.cor.TankTankCollider;
 import com.th.strategy.FireStrategy;
 
 import java.awt.*;
@@ -9,10 +10,11 @@ import java.util.Random;
  * @author TanHaooo
  * @date 2020/12/29 1:43
  */
-public class Tank {
+public class Tank extends GameObject {
     public static final int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static final int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private int x = 200, y = 200;
+    private int oldX, oldY;
     private Dir dir = Dir.DOWN;
     private final int SPEED = 5;
     private boolean moving = true;
@@ -49,7 +51,7 @@ public class Tank {
     public void paint(Graphics g) {
 //        g.setColor(Color.BLACK);
 //        g.fillRect(x, y, WIDTH, HEIGHT);
-        if (!living) gm.tanks.remove(this);
+        if (!living) gm.remove(this);
         switch (dir) {
             case DOWN:
                 g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
@@ -68,6 +70,8 @@ public class Tank {
     }
 
     private void move() {
+        oldX = x;
+        oldY = y;
         if (!isMoving()) return;
         switch (dir) {
             case LEFT:
@@ -98,6 +102,11 @@ public class Tank {
         if (this.y < 28) y = 28;
         if (this.x > TankFrame.GAME_WIDTH - Tank.WIDTH) x = TankFrame.GAME_WIDTH - Tank.WIDTH;
         if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT) y = TankFrame.GAME_HEIGHT - Tank.HEIGHT;
+    }
+
+    public void stop() {
+        this.x = oldX;
+        this.y = oldY;
     }
 
     private void randomDir() {

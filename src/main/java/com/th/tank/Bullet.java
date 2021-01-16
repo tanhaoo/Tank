@@ -6,7 +6,7 @@ import java.awt.*;
  * @author TanHaooo
  * @date 2020/12/29 2:07
  */
-public class Bullet {
+public class Bullet extends GameObject {
     private static final int SPEED = 10;
     public static final int WIDTH = ResourceMgr.bulletD.getWidth();
     public static final int HEIGHT = ResourceMgr.bulletD.getHeight();
@@ -27,12 +27,12 @@ public class Bullet {
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
-        gm.bullets.add(this);
+        gm.add(this);
     }
 
     public void paint(Graphics g) {
         if (!isLiving())
-            gm.bullets.remove(this);
+            gm.remove(this);
 //        g.setColor(Color.RED);
 //        g.fillOval(x, y, WIDTH, HEIGHT);
         switch (dir) {
@@ -75,16 +75,18 @@ public class Bullet {
             living = false;
     }
 
-    public void collideWith(Tank tank) {
-        if (this.group == tank.getGroup()) return;
+    public boolean collideWith(Tank tank) {
+        if (this.group == tank.getGroup()) return false;
 
         if (rect.intersects(tank.getRect())) {
             tank.die();
             this.die();
             int eX = tank.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
             int eY = tank.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
-            gm.explodes.add(new Explode(eX, eY, gm));
+            gm.add(new Explode(eX, eY, gm));
+            return true;
         }
+        return false;
     }
 
     private void die() {
