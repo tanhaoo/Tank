@@ -24,13 +24,11 @@ public class Tank extends GameObject {
     private Group group = Group.BAD;
     private Rectangle rect = new Rectangle();
     private FireStrategy fs;
-    public GameModel gm;
 
-    public Tank(int x, int y, Dir dir, Group group, GameModel gm) {
+    public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.gm = gm;
         this.group = group;
         rect.x = this.x;
         rect.y = this.y;
@@ -46,12 +44,13 @@ public class Tank extends GameObject {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        GameModel.getInstance().add(this);
     }
 
     public void paint(Graphics g) {
 //        g.setColor(Color.BLACK);
 //        g.fillRect(x, y, WIDTH, HEIGHT);
-        if (!living) gm.remove(this);
+        if (!living) GameModel.getInstance().remove(this);
         switch (dir) {
             case DOWN:
                 g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
@@ -181,11 +180,4 @@ public class Tank extends GameObject {
         this.rect = rect;
     }
 
-    public GameModel getGm() {
-        return gm;
-    }
-
-    public void setGm(GameModel gm) {
-        this.gm = gm;
-    }
 }

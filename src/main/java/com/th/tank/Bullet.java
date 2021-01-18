@@ -14,25 +14,23 @@ public class Bullet extends GameObject {
     private boolean living = true;
     private Dir dir = Dir.DOWN;
     private Group group = Group.BAD;
-    public GameModel gm;
     private Rectangle rect = new Rectangle();
 
-    public Bullet(int x, int y, Dir dir, Group group, GameModel gm) {
+    public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.gm = gm;
         this.group = group;
         rect.x = this.x;
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
-        gm.add(this);
+        GameModel.getInstance().add(this);
     }
 
     public void paint(Graphics g) {
         if (!isLiving())
-            gm.remove(this);
+            GameModel.getInstance().remove(this);
 //        g.setColor(Color.RED);
 //        g.fillOval(x, y, WIDTH, HEIGHT);
         switch (dir) {

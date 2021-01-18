@@ -15,7 +15,7 @@ public class TankFrame extends Frame {
     boolean bR = false;
     boolean bD = false;
     static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
-    GameModel gm = new GameModel();
+    GameModel gm = GameModel.getInstance();
     Tank myTank = gm.getMainTank();
 
     public TankFrame() {

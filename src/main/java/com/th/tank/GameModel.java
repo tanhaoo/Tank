@@ -1,9 +1,6 @@
 package com.th.tank;
 
-import com.th.cor.BulletTankCollider;
-import com.th.cor.Collider;
 import com.th.cor.ColliderChain;
-import com.th.cor.TankTankCollider;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,25 +12,22 @@ import java.util.List;
  */
 public class GameModel {
 
+    private static final GameModel INSTANCE = new GameModel();
     private List<GameObject> objects = new ArrayList<>();
-    //    List<Bullet> bullets = new ArrayList<>();
-//    List<Tank> tanks = new ArrayList<>();
-//    List<Explode> explodes = new ArrayList<>();
     ColliderChain chain = new ColliderChain();
-    private Tank myTank = new Tank(TankFrame.GAME_WIDTH / 2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD, this);
+    private Tank myTank;
+    private int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
 
-    public GameModel() {
-        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
-        //初始化敌方坦克
-        for (int i = 0; i < initTankCount; i++) {
-            add(new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD, this));
-        }
-        //初始化墙
-        add(new Wall(150,150,220,50));
-        add(new Wall(550,150,220,50));
-        add(new Wall(300,300,50,200));
-        add(new Wall(550,300,50,200));
-        //add(myTank);
+    private GameModel() {
+
+    }
+
+    static {
+        INSTANCE.init();
+    }
+
+    public static GameModel getInstance() {
+        return INSTANCE;
     }
 
     public void paint(Graphics g) {
@@ -62,6 +56,21 @@ public class GameModel {
         }
     }
 
+    private void init() {
+        //初始化主坦克
+        myTank = new Tank(TankFrame.GAME_WIDTH / 2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD);
+        //初始化敌方坦克
+        for (int i = 0; i < initTankCount; i++) {
+            new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD);
+        }
+        //初始化墙
+        new Wall(150, 150, 220, 50);
+        new Wall(550, 150, 220, 50);
+        new Wall(300, 300, 50, 200);
+        new Wall(550, 300, 50, 200);
+        //add(myTank);
+    }
+
     public Tank getMainTank() {
         return myTank;
     }
@@ -73,5 +82,4 @@ public class GameModel {
     public void remove(GameObject go) {
         this.objects.remove(go);
     }
-
 }

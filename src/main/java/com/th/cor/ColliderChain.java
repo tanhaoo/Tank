@@ -37,6 +37,7 @@ public class ColliderChain implements Collider {
         return this;
     }
 
+    @Override
     public boolean collide(GameObject o1, GameObject o2) {
         for (int i = 0; i < colliders.size(); i++) {
             if (!colliders.get(i).collide(o1, o2)) return false;
