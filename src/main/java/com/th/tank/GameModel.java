@@ -58,7 +58,7 @@ public class GameModel {
 
     private void init() {
         //初始化主坦克
-        myTank = new Tank(TankFrame.GAME_WIDTH / 2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD);
+        myTank = new Tank(TankFrame.GAME_WIDTH / 3*2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD);
         //初始化敌方坦克
         for (int i = 0; i < initTankCount; i++) {
             new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD);

@@ -1,9 +1,8 @@
 package com.th.strategy;
 
-import com.th.tank.Audio;
-import com.th.tank.Bullet;
-import com.th.tank.Group;
-import com.th.tank.Tank;
+import com.th.decorator.RectDecorator;
+import com.th.decorator.TailDecorator;
+import com.th.tank.*;
 
 /**
  * @author TanHaooo
@@ -14,8 +13,8 @@ public class DefaultFireStrategy implements FireStrategy {
     public void fire(Tank t) {
         int bX = t.getX() + Tank.WIDTH / 2 - Bullet.WIDTH / 2;
         int bY = t.getY() + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
-        new Bullet(bX, bY, t.getDir(), t.getGroup());
+        GameModel.getInstance().add(new RectDecorator(new TailDecorator(new Bullet(bX, bY, t.getDir(), t.getGroup()))));
 
-        if(t.getGroup()== Group.GOOD)new Thread(()->new Audio("audio/tank_fire.wav"));
+        if (t.getGroup() == Group.GOOD) new Thread(() -> new Audio("audio/tank_fire.wav"));
     }
 }

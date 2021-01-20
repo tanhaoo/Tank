@@ -13,7 +13,6 @@ import java.util.Random;
 public class Tank extends GameObject {
     public static final int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static final int HEIGHT = ResourceMgr.goodTankU.getHeight();
-    private int x = 200, y = 200;
     private int oldX, oldY;
     private Dir dir = Dir.DOWN;
     private final int SPEED = 5;
@@ -66,6 +65,16 @@ public class Tank extends GameObject {
                 break;
         }
         move();
+    }
+
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     private void move() {
