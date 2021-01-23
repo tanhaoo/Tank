@@ -8,7 +8,7 @@ import java.awt.*;
  * @author TanHaooo
  * @date 2021/1/21 0:26
  */
-public class RectDecorator extends GODecorator {
+public class RectDecorator extends GoDecorator {
 
     public RectDecorator(GameObject go) {
         super(go);

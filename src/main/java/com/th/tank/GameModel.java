@@ -37,7 +37,7 @@ public class GameModel {
 //        g.drawString("坦克数量：" + tanks.size(), 10, 80);
 //        g.drawString("爆炸数量：" + explodes.size(), 10, 100);
         g.setColor(c);
-        myTank.paint(g);
+        //myTank.paint(g);
         for (int i = 0; i < objects.size(); i++) {
             //foreach迭代时不允许外部remove元素，只允许自身删除，所以用简单遍历就没事
             objects.get(i).paint(g);

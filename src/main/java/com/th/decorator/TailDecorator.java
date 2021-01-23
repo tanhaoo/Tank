@@ -8,7 +8,7 @@ import java.awt.*;
  * @author TanHaooo
  * @date 2021/1/21 0:26
  */
-public class TailDecorator extends GODecorator {
+public class TailDecorator extends GoDecorator {
 
     public TailDecorator(GameObject go) {
         super(go);

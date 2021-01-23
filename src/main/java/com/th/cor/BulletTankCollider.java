@@ -1,9 +1,6 @@
 package com.th.cor;
 
-import com.th.tank.Bullet;
-import com.th.tank.Explode;
-import com.th.tank.GameObject;
-import com.th.tank.Tank;
+import com.th.tank.*;
 
 /**
  * @author TanHaooo
@@ -19,7 +16,8 @@ public class BulletTankCollider implements Collider {
             if (b.getGroup() == t.getGroup()) return true;
 
             if (b.getRect().intersects(t.getRect())) {
-                t.die();
+                if (t.getGroup() == Group.BAD)
+                    t.die();
                 b.die();
                 int eX = t.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
                 int eY = t.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
