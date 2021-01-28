@@ -7,6 +7,10 @@ import com.th.observer.TankFireObserver;
 import com.th.strategy.FireStrategy;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;

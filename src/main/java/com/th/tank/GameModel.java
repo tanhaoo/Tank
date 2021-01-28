@@ -3,6 +3,7 @@ package com.th.tank;
 import com.th.cor.ColliderChain;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class GameModel {
 
     private void init() {
         //初始化主坦克
-        myTank = new Tank(TankFrame.GAME_WIDTH / 3*2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD);
+        myTank = new Tank(TankFrame.GAME_WIDTH / 3 * 2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD);
         //初始化敌方坦克
         for (int i = 0; i < initTankCount; i++) {
             new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD);
@@ -69,6 +70,60 @@ public class GameModel {
         new Wall(300, 300, 50, 200);
         new Wall(550, 300, 50, 200);
         //add(myTank);
+    }
+
+    public void save() {
+        File file = new File("D:\\Project\\IDEA\\Tank\\src\\main\\resources\\tank.data");
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+//            oos.writeObject(myTank);
+//            oos.writeObject(objects);
+            Tank tank = null;
+            for (GameObject object : objects
+            ) {
+                if (object instanceof Tank)
+                    if (((Tank) object).getGroup() == Group.GOOD)
+                        tank = (Tank) object;
+            }
+            oos.writeObject(tank);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } finally {
+            if (oos != null)
+                try {
+                    oos.close();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+        }
+    }
+
+    public void load() {
+        File file = new File("D:\\Project\\IDEA\\Tank\\src\\main\\resources\\tank.data");
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(file));
+//            myTank = (Tank) ois.readObject();
+//            objects = (List) ois.readObject();
+            Tank tank = (Tank) ois.readObject();
+            myTank = tank;
+            for (int i = 0; i < objects.size(); i++) {
+                if (objects.get(i) instanceof Tank)
+                    if (((Tank) objects.get(i)).getGroup() == Group.GOOD) {
+                        objects.set(i, tank);
+                    }
+            }
+        } catch (IOException | ClassNotFoundException exception) {
+            exception.printStackTrace();
+        } finally {
+            if (ois != null)
+                try {
+                    ois.close();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+        }
     }
 
     public Tank getMainTank() {
