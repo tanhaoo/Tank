@@ -7,7 +7,6 @@ import java.awt.event.WindowEvent;
 public class Main {
 
     public static void main(String[] args) {
-        // write your code here
         TankFrame tf = new TankFrame();
         while (true) {
             try {

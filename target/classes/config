@@ -1,5 +1,5 @@
 #tanks count at initialization
-initTankCount= 1 0
+initTankCount=10
 #fireStrategy
 goodFS=com.th.strategy.FourDirFireStrategy
 badFS=com.th.strategy.DefaultFireStrategy
