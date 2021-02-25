@@ -23,7 +23,7 @@ public class PropertyMgr {
     public static Object get(String key) {
         if (props == null) return null;
         return props.get(key);
-    } 
+    }
 
     @Test
     public void test() {

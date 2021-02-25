@@ -131,6 +131,7 @@ public class Tank extends GameObject {
             (o1) -> {
                 Tank t = o1.getSource();
             });
+    //这边其实只有一个TankFireHandler，下面这个lambda表达式是测试没有实际意义，为了知道这样一个一个添加观察者事件
 
     public void handleFireKey() {
         TankFireEvent event = new TankFireEvent(this);
