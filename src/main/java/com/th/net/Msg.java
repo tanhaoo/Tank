@@ -5,4 +5,6 @@ package com.th.net;
  * @date 2021/2/25 16:14
  */
 public class Msg {
+    public static void main(String[] args) {
+    }
 }

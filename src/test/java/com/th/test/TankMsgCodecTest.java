@@ -1,4 +1,4 @@
-package com.th.Test;
+package com.th.test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -1,4 +1,4 @@
-package com.th.Test;
+package com.th.test;
 
 /**
  * @author TanHaooo

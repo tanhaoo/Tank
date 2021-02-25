@@ -14,11 +14,13 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author TanHaooo
  * @date 2020/12/29 1:43
  */
+
 public class Tank extends GameObject {
     public static final int WIDTH = ResourceMgr.goodTankU.getWidth();
     public static final int HEIGHT = ResourceMgr.goodTankU.getHeight();
@@ -30,6 +32,7 @@ public class Tank extends GameObject {
     private boolean living = true;
     private Random random = new Random();
     private Group group = Group.BAD;
+    private UUID id = UUID.randomUUID();
     private Rectangle rect = new Rectangle();
     private FireStrategy fs;
 
@@ -213,4 +216,11 @@ public class Tank extends GameObject {
         this.rect = rect;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 }

@@ -8,6 +8,7 @@ import java.io.Serializable;
  * @date 2021/1/15 22:41
  */
 public abstract class GameObject implements Serializable {
+                                            //说明找个对象可以被序列化
     public int x, y;
 
     public abstract void paint(Graphics g);

@@ -1,11 +1,8 @@
-package com.th.Test;
+package com.th.test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.MessageToByteEncoder;
-
-import java.util.List;
 
 /**
  * @author TanHaooo
