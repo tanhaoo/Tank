@@ -4,7 +4,7 @@ import com.th.cor.ColliderChain;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -15,9 +15,11 @@ public class GameModel {
 
     private static final GameModel INSTANCE = new GameModel();
     private List<GameObject> objects = new ArrayList<>();
+    private HashMap<UUID, Tank> tanks = new HashMap<>();
     ColliderChain chain = new ColliderChain();
     private Tank myTank;
     private int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
+    Random random = new Random();
 
     private GameModel() {
 
@@ -59,11 +61,14 @@ public class GameModel {
 
     private void init() {
         //初始化主坦克
-        myTank = new Tank(TankFrame.GAME_WIDTH / 3 * 2 - Tank.WIDTH / 2, TankFrame.GAME_HEIGHT / 2 - Tank.HEIGHT / 2, Dir.UP, Group.GOOD);
+        myTank = new Tank(random.nextInt(TankFrame.GAME_WIDTH - Tank.WIDTH),
+                random.nextInt(TankFrame.GAME_HEIGHT - Tank.HEIGHT),
+                Dir.UP, Group.GOOD);
         //初始化敌方坦克
-        for (int i = 0; i < initTankCount; i++) {
-            new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD);
-        }
+//        for (int i = 0; i < initTankCount; i++) {
+//            new Tank(50 + i * 100, 200, Dir.DOWN, Group.BAD);
+//        }
+
         //初始化墙
         new Wall(150, 150, 220, 50);
         new Wall(550, 150, 220, 50);
@@ -137,4 +142,17 @@ public class GameModel {
     public void remove(GameObject go) {
         this.objects.remove(go);
     }
+
+    public void addHashTank(Tank tank) {
+        this.tanks.put(tank.getId(), tank);
+    }
+
+    public void removeHashTank(UUID id) {
+        this.tanks.remove(id);
+    }
+
+    public Tank findByUUID(UUID id) {
+        return tanks.get(id);
+    }
+
 }

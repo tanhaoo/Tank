@@ -1,6 +1,7 @@
 package com.th.tank;
 
 import com.th.cor.TankTankCollider;
+import com.th.net.TankStateMsg;
 import com.th.observer.TankFireEvent;
 import com.th.observer.TankFireHandler;
 import com.th.observer.TankFireObserver;
@@ -41,6 +42,20 @@ public class Tank extends GameObject {
         this.y = y;
         this.dir = dir;
         this.group = group;
+        initTank();
+    }
+
+    public Tank(TankStateMsg msg) {
+        this.x = msg.getX();
+        this.y = msg.getY();
+        this.dir = msg.getDir();
+        this.group = msg.getGroup();
+        this.id = msg.getId();
+        this.moving = false;
+        initTank();
+    }
+
+    public void initTank() {
         rect.x = this.x;
         rect.y = this.y;
         rect.width = WIDTH;
@@ -55,12 +70,19 @@ public class Tank extends GameObject {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        GameModel.getInstance().addHashTank(this);
         GameModel.getInstance().add(this);
     }
 
     public void paint(Graphics g) {
 //        g.setColor(Color.BLACK);
 //        g.fillRect(x, y, WIDTH, HEIGHT);
+        //加UUID标识
+        Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.drawString(id.toString(), this.x, this.y - 10);
+        g.setColor(c);
+
         if (!living) GameModel.getInstance().remove(this);
         switch (dir) {
             case DOWN:

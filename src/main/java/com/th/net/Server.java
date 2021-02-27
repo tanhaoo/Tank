@@ -30,7 +30,9 @@ public class Server {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             System.out.println(ch);
                             ChannelPipeline pl = ch.pipeline();
-                            pl.addLast(new ServerChildHandler());
+                            pl.addLast(new TankStateMsgEncoder())
+                                    .addLast(new TankStateMsgDecoder())
+                                    .addLast(new ServerChildHandler());
                         }
                     })
                     .bind(8888)
@@ -47,34 +49,18 @@ public class Server {
     }
 }
 
-class ServerChildHandler extends ChannelInboundHandlerAdapter {
+class ServerChildHandler extends SimpleChannelInboundHandler<TankStateMsg> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Server.clients.add(ctx.channel());
     }
 
-    //channelRead 是workerGroup调的
+
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = null;
-        try {
-            buf = (ByteBuf) msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(), bytes);
-            String s = new String(bytes);
-            if (s.equals("_bye_")) {
-                //com.th.netty.s02.ServerFrame.INSTANCE.updateServerMsg(ctx.channel() + "客户端退出");
-                Server.clients.remove(ctx.channel());
-                ctx.close();
-            } else {
-                //com.th.netty.s02.ServerFrame.INSTANCE.updateClientMsg(s);
-                Server.clients.writeAndFlush(msg);
-            }
-        } finally {
-            //if (buf != null) ReferenceCountUtil.release(buf); 与writeAndFlush冲突
-            // System.out.println(buf.refCnt());//知道有多少人引用了他
-        }
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TankStateMsg tankStateMsg) throws Exception {
+        ServerFrame.INSTANCE.updateServerMsg(tankStateMsg.toString());
+        Server.clients.writeAndFlush(tankStateMsg);
     }
 
     @Override

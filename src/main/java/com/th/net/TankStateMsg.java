@@ -2,6 +2,7 @@ package com.th.net;
 
 import com.th.tank.Dir;
 import com.th.tank.Group;
+import com.th.tank.Tank;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,15 +18,23 @@ import java.util.UUID;
  * @date 2021/2/25 20:33
  */
 @Data
-public class TankStateMsg {
+public class TankStateMsg extends Msg {
     private int x, y;
     private Dir dir;
     private boolean moving;
     private Group group;
     private UUID id;
 
+    public TankStateMsg(Tank t) {
+        this.x = t.getX();
+        this.y = t.getY();
+        this.dir = t.getDir();
+        this.moving = t.isMoving();
+        this.group = t.getGroup();
+        this.id = t.getId();
+    }
+
     public TankStateMsg(int x, int y, Dir dir, boolean moving, Group group, UUID id) {
-        super();
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -37,6 +46,12 @@ public class TankStateMsg {
     public TankStateMsg() {
     }
 
+    @Override
+    public void handle() {
+
+    }
+
+    @Override
     public byte[] toBytes() {
         ByteArrayOutputStream baos = null;
         DataOutputStream dos = null;
@@ -61,22 +76,34 @@ public class TankStateMsg {
             bytes = baos.toByteArray();
         } catch (IOException exception) {
             exception.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if(baos!=null){
+                if (baos != null) {
                     baos.close();
                 }
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                if(dos!=null){
+                if (dos != null) {
                     dos.close();
                 }
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return bytes;
+    }
+
+    @Override
+    public String toString() {
+        return "TankStateMsg{" +
+                "x=" + x +
+                ", y=" + y +
+                ", dir=" + dir +
+                ", moving=" + moving +
+                ", group=" + group +
+                ", id=" + id +
+                '}';
     }
 }

@@ -1,5 +1,7 @@
 package com.th.net;
 
+import com.th.tank.Tank;
+import com.th.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -61,32 +63,28 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         System.out.println(ch);
-        ch.pipeline().addLast(new ClientHandler());//pipeline是channel上的责任链一个一个链条
+        ch.pipeline()
+                .addLast(new TankStateMsgEncoder())
+                .addLast(new TankStateMsgDecoder())
+                .addLast(new ClientHandler());//pipeline是channel上的责任链一个一个链条
     }
 }
 
-class ClientHandler extends ChannelInboundHandlerAdapter {
+class ClientHandler extends SimpleChannelInboundHandler<TankStateMsg> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //Channel第一次连上可用，写出一个字符串 Direct Memory  直接访问系统内存，不通过JVM虚拟机，带来了垃圾回收问题
-        ByteBuf buf = Unpooled.copiedBuffer("hello".getBytes());
-        ctx.writeAndFlush(buf);
+        ctx.writeAndFlush(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = null;
-        try {
-            buf = (ByteBuf) msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(), bytes);
-            System.out.println(new String(bytes));
-         //   ClientFrame.INSTANCE.update(new String(bytes));
-        } finally {
-            if (buf != null) ReferenceCountUtil.release(buf);
-            // System.out.println(buf.refCnt());//知道有多少人引用了他
-        }
+    protected void channelRead0(ChannelHandlerContext ctx, TankStateMsg tankStateMsg) throws Exception {
+        if (tankStateMsg.getId().equals(TankFrame.INSTANCE.getMyTank().getId())
+                || TankFrame.INSTANCE.getGm().findByUUID(tankStateMsg.getId()) != null) return;
+        new Tank(tankStateMsg);
+        System.out.println(tankStateMsg);
+        ctx.writeAndFlush(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
     }
 
 }

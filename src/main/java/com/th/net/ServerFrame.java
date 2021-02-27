@@ -12,7 +12,6 @@ public class ServerFrame extends Frame {
 
     public static final ServerFrame INSTANCE = new ServerFrame();
 
-    Button btnStart = new Button("start");
     TextArea taLeft = new TextArea();
     TextArea taRight = new TextArea();
     Server server = new Server();
@@ -20,7 +19,6 @@ public class ServerFrame extends Frame {
     private ServerFrame() {
         this.setSize(1600, 600);
         this.setLocation(300, 30);
-        this.add(btnStart, BorderLayout.NORTH);
         Panel p = new Panel(new GridLayout(1, 2));
         p.add(taLeft);
         p.add(taRight);
@@ -36,7 +34,6 @@ public class ServerFrame extends Frame {
     public static void main(String[] args) {
         ServerFrame.INSTANCE.setVisible(true);
         ServerFrame.INSTANCE.server.serverStart();
-
     }
 
     public void updateServerMsg(String s) {

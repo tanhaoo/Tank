@@ -1,5 +1,7 @@
 package com.th.tank;
 
+import lombok.Data;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -9,7 +11,9 @@ import java.util.List;
  * @author TanHaooo
  * @date 2020/12/29 0:05
  */
+@Data
 public class TankFrame extends Frame {
+    public static final TankFrame INSTANCE=new TankFrame();
     boolean bL = false;
     boolean bU = false;
     boolean bR = false;
@@ -18,7 +22,7 @@ public class TankFrame extends Frame {
     GameModel gm = GameModel.getInstance();
     Tank myTank = gm.getMainTank();
 
-    public TankFrame() {
+    private TankFrame() {
         myTank.setMoving(false);
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setResizable(false);
@@ -128,7 +132,6 @@ public class TankFrame extends Frame {
     @Override
     public void paint(Graphics g) {
         gm.paint(g);
-
     }
 }
 
