@@ -3,14 +3,10 @@ package com.th.net;
 import com.th.tank.Dir;
 import com.th.tank.Group;
 import com.th.tank.Tank;
+import com.th.tank.TankFrame;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.awt.*;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.UUID;
 
 /**
@@ -48,7 +44,11 @@ public class TankStateMsg extends Msg {
 
     @Override
     public void handle() {
-
+        if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())
+                || TankFrame.INSTANCE.getGm().findByUUID(this.id) != null) return;
+        System.out.println(Client.INSTANCE.channel.toString() + "\n" + this.toString() + "\n");
+        new Tank(this);
+        Client.INSTANCE.send(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
     }
 
     @Override
@@ -93,6 +93,32 @@ public class TankStateMsg extends Msg {
             }
         }
         return bytes;
+    }
+
+    @Override
+    public void parse(byte[] bytes) {
+        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
+        try {
+            this.x = dis.readInt();
+            this.y = dis.readInt();
+            this.dir = (Dir.values()[dis.readInt()]);
+            this.moving = dis.readBoolean();
+            this.group = (Group.values()[dis.readInt()]);
+            this.id = (new UUID(dis.readLong(), dis.readLong()));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } finally {
+            try {
+                dis.close();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public MsgType getMsgType() {
+        return MsgType.TankState;
     }
 
     @Override

@@ -17,7 +17,11 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class Client {
 
-    private Channel channel = null;
+    public static final Client INSTANCE = new Client();
+    public Channel channel = null;
+
+    private Client() {
+    }
 
     public void connect() {
         //线程池
@@ -49,14 +53,13 @@ public class Client {
         }
     }
 
-    public void send(String msg) {
-        ByteBuf buf = Unpooled.copiedBuffer(msg.getBytes());
-        channel.writeAndFlush(buf);
+    public void send(Msg msg) {
+        channel.writeAndFlush(msg);
     }
 
-    public void closeConnect() {
-        this.send("_bye_");
-    }
+//    public void closeConnect() {
+//        this.send("_bye_");
+//    }
 }
 
 class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
@@ -70,7 +73,7 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     }
 }
 
-class ClientHandler extends SimpleChannelInboundHandler<TankStateMsg> {
+class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -79,12 +82,8 @@ class ClientHandler extends SimpleChannelInboundHandler<TankStateMsg> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TankStateMsg tankStateMsg) throws Exception {
-        if (tankStateMsg.getId().equals(TankFrame.INSTANCE.getMyTank().getId())
-                || TankFrame.INSTANCE.getGm().findByUUID(tankStateMsg.getId()) != null) return;
-        new Tank(tankStateMsg);
-        System.out.println(tankStateMsg);
-        ctx.writeAndFlush(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
+    protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+        msg.handle();
     }
 
 }

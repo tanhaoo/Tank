@@ -20,7 +20,6 @@ public class Main {
                 }
             }
         }).start();
-        Client client = new Client();
-        client.connect();
+        Client.INSTANCE.connect();
     }
 }

@@ -19,6 +19,7 @@ public class ServerFrame extends Frame {
     private ServerFrame() {
         this.setSize(1600, 600);
         this.setLocation(300, 30);
+        taLeft.setFont(new Font("宋体", Font.BOLD, 30));
         Panel p = new Panel(new GridLayout(1, 2));
         p.add(taLeft);
         p.add(taRight);

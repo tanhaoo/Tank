@@ -1,5 +1,6 @@
 package com.th.tankCodec;
 
+import com.th.net.MsgType;
 import com.th.net.TankStateMsg;
 import com.th.net.TankStateMsgDecoder;
 import com.th.net.TankStateMsgEncoder;
@@ -27,6 +28,13 @@ public class TankStateMsgCodecTest {
         ch.pipeline().addLast(new TankStateMsgEncoder());
         ch.writeOutbound(msg);
         ByteBuf buf = ch.readOutbound();
+
+        MsgType type = MsgType.values()[buf.readInt()];
+        assertEquals(MsgType.TankState, type);
+
+        int length = buf.readInt();
+        assertEquals(length, 33);
+
         int x = buf.readInt();
         int y = buf.readInt();
         Dir dir = Dir.values()[buf.readInt()];
@@ -46,12 +54,20 @@ public class TankStateMsgCodecTest {
     public void testDecoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
         ch.pipeline().addLast(new TankStateMsgDecoder());
+
         UUID id = UUID.randomUUID();
         TankStateMsg msg = new TankStateMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
+
         ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes(msg.toBytes());
+        buf.writeInt(MsgType.TankState.ordinal());
+        byte[] bytes=msg.toBytes();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
+
         ch.writeInbound(buf.duplicate());
         TankStateMsg result = ch.readInbound();
+
+        assertEquals(MsgType.TankState,result.getMsgType());
         assertEquals(5, result.getX());
         assertEquals(10, result.getY());
         assertEquals(Dir.DOWN, result.getDir());

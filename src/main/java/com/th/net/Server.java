@@ -49,18 +49,18 @@ public class Server {
     }
 }
 
-class ServerChildHandler extends SimpleChannelInboundHandler<TankStateMsg> {
+class ServerChildHandler extends SimpleChannelInboundHandler<Msg> {
+    int count = 0;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Server.clients.add(ctx.channel());
     }
 
-
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TankStateMsg tankStateMsg) throws Exception {
-        ServerFrame.INSTANCE.updateServerMsg(tankStateMsg.toString());
-        Server.clients.writeAndFlush(tankStateMsg);
+    protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+        ServerFrame.INSTANCE.updateServerMsg(count++ + "|" + ctx.channel().toString() + "\n" + msg.toString() + "\n");
+        Server.clients.writeAndFlush(msg);
     }
 
     @Override
