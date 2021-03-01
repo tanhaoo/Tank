@@ -17,6 +17,5 @@ public class FourDirFireStrategy implements FireStrategy {
             //t.getTf().gf.createBullet(bX, bY, dir, t.getGroup(), t.getTf());
         }
         if (t.getGroup() == Group.GOOD) new Thread(() -> new Audio("audio/tank_fire.wav"));
-
     }
 }

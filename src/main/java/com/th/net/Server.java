@@ -24,6 +24,8 @@ public class Server {
             ServerBootstrap b = new ServerBootstrap();
             ChannelFuture f = b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)//除非指定的是BIOServer不然都是异步的
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    //TCP参数，立即发送数据，默认值为Ture（Netty默认为True而操作系统默认为False）。该值设置Nagle算法的启用，改算法将小的碎片数据连接成更大的报文来最小化所发送的报文的数量，如果需要发送一些较小的报文，则需要禁用该算法。Netty默认禁用该算法，从而最小化报文传输延时。
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {

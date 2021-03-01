@@ -16,6 +16,7 @@ public class GameModel {
     private static final GameModel INSTANCE = new GameModel();
     private List<GameObject> objects = new ArrayList<>();
     private HashMap<UUID, Tank> tanks = new HashMap<>();
+    private HashMap<UUID, ArrayList<Bullet>> bullets = new HashMap<>();
     ColliderChain chain = new ColliderChain();
     private Tank myTank;
     private int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));

@@ -1,6 +1,7 @@
 package com.th.tank;
 
 import com.th.cor.TankTankCollider;
+import com.th.net.Client;
 import com.th.net.TankStateMsg;
 import com.th.observer.TankFireEvent;
 import com.th.observer.TankFireHandler;

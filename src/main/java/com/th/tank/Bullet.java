@@ -1,6 +1,9 @@
 package com.th.tank;
 
+import com.th.net.BulletNewMsg;
+
 import java.awt.*;
+import java.util.UUID;
 
 /**
  * @author TanHaooo
@@ -14,12 +17,26 @@ public class Bullet extends GameObject {
     private Dir dir = Dir.DOWN;
     private Group group = Group.BAD;
     private Rectangle rect = new Rectangle();
+    private UUID id;
 
     public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+        initBullet();
+    }
+
+    public Bullet(BulletNewMsg msg) {
+        this.id = msg.getId();
+        this.x = msg.getX();
+        this.y = msg.getY();
+        this.dir = msg.getDir();
+        this.group = msg.getGroup();
+        initBullet();
+    }
+
+    public void initBullet() {
         rect.x = this.x;
         rect.y = this.y;
         rect.width = WIDTH;
