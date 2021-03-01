@@ -1,6 +1,7 @@
 package com.th.tank;
 
 import com.th.cor.ColliderChain;
+import lombok.Data;
 
 import java.awt.*;
 import java.io.*;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author TanHaooo
  * @date 2021/1/15 21:14
  */
+@Data
 public class GameModel {
 
     private static final GameModel INSTANCE = new GameModel();
@@ -158,7 +160,7 @@ public class GameModel {
         this.idBullets.put(bullet.getId(), allBullets);
     }
 
-    public Tank findByUUID(UUID id) {
+    public Tank findTankByUUID(UUID id) {
         return tanks.get(id);
     }
 

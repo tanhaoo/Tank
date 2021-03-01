@@ -3,6 +3,7 @@ package com.th.tank;
 import com.th.cor.TankTankCollider;
 import com.th.net.BulletNewMsg;
 import com.th.net.Client;
+import com.th.net.TankDieMsg;
 import com.th.net.TankStateMsg;
 import com.th.observer.TankFireEvent;
 import com.th.observer.TankFireHandler;
@@ -85,7 +86,10 @@ public class Tank extends GameObject {
         g.drawString(id.toString(), this.x, this.y - 10);
         g.setColor(c);
 
-        if (!living) GameModel.getInstance().remove(this);
+        if (!living) {
+            GameModel.getInstance().remove(this);
+            GameModel.getInstance().removeHashTank(id);
+        }
         switch (dir) {
             case DOWN:
                 g.drawImage(this.group == Group.GOOD ? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
@@ -178,6 +182,7 @@ public class Tank extends GameObject {
 
     public void die() {
         this.living = false;
+        Client.INSTANCE.send(new TankDieMsg(this));
     }
 
     public boolean isLiving() {

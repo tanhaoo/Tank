@@ -1,7 +1,6 @@
 package com.th.net;
 
-import com.th.tank.Tank;
-import com.th.tank.TankFrame;
+import com.th.tank.*;
 import lombok.Data;
 
 import java.io.*;
@@ -9,34 +8,32 @@ import java.util.UUID;
 
 /**
  * @author TanHaooo
- * @date 2021/3/1 14:12
+ * @date 2021/3/1 18:11
  */
 @Data
-public class TankStopMsg extends Msg {
+public class TankDieMsg extends Msg {
 
     private UUID id;
-    private boolean moving;
+    private boolean living;
 
-    public TankStopMsg() {
+    public TankDieMsg() {
     }
 
-    public TankStopMsg(UUID id, boolean moving) {
+    public TankDieMsg(UUID id, boolean living) {
         this.id = id;
-        this.moving = moving;
+        this.living = living;
     }
 
-    public TankStopMsg(Tank t) {
+    public TankDieMsg(Tank t) {
         this.id = t.getId();
-        this.moving = t.isMoving();
+        this.living = t.isLiving();
     }
 
     @Override
     public void handle() {
-        if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())) return;
-        System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
-        Tank t = TankFrame.INSTANCE.getGm().findTankByUUID(id);
-        if (t != null) {
-            t.setMoving(moving);
+        if (TankFrame.INSTANCE.getMyTank().getId() != id) {
+            TankFrame.INSTANCE.getGm().findTankByUUID(id).setLiving(false);
+            System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
         }
     }
 
@@ -48,7 +45,7 @@ public class TankStopMsg extends Msg {
         try {
             dos.writeLong(id.getMostSignificantBits());
             dos.writeLong(id.getLeastSignificantBits());
-            dos.writeBoolean(moving);
+            dos.writeBoolean(living);
             dos.flush();
             bytes = baos.toByteArray();
         } catch (IOException exception) {
@@ -64,7 +61,7 @@ public class TankStopMsg extends Msg {
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
         try {
             this.id = new UUID(dis.readLong(), dis.readLong());
-            this.moving = dis.readBoolean();
+            this.living = dis.readBoolean();
         } catch (IOException exception) {
             exception.printStackTrace();
         } finally {
@@ -78,7 +75,6 @@ public class TankStopMsg extends Msg {
 
     @Override
     public MsgType getMsgType() {
-        return MsgType.TankStop;
+        return MsgType.TankDie;
     }
-
 }

@@ -45,11 +45,12 @@ public class TankStateMsg extends Msg {
     @Override
     public void handle() {
         if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())
-                || TankFrame.INSTANCE.getGm().findByUUID(this.id) != null) return;
+                || TankFrame.INSTANCE.getGm().findTankByUUID(this.id) != null) return;
         System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
         this.setGroup(Group.BAD);
         new Tank(this);
-        Client.INSTANCE.send(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
+        if (TankFrame.INSTANCE.getMyTank().isLiving())
+            Client.INSTANCE.send(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
     }
 
     @Override

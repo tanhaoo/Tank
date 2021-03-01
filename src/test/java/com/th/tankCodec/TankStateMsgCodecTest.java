@@ -19,6 +19,44 @@ import static org.junit.Assert.assertEquals;
 public class TankStateMsgCodecTest {
 
     @Test
+    public void testTankDieEncoder() {
+        EmbeddedChannel ch = new EmbeddedChannel();
+        UUID id = UUID.randomUUID();
+        TankDieMsg msg = new TankDieMsg(id, true);
+        ch.pipeline().addLast(new MsgEncoder());
+        ch.writeOutbound(msg);
+        ByteBuf buf = ch.readOutbound();
+
+        MsgType type = MsgType.values()[buf.readInt()];
+        int length = buf.readInt();
+        assertEquals(MsgType.TankDie, type);
+        assertEquals(17, length);
+        assertEquals(id, new UUID(buf.readLong(), buf.readLong()));
+        assertEquals(true, buf.readBoolean());
+    }
+
+    @Test
+    public void testTankDieDecoder() {
+        EmbeddedChannel ch = new EmbeddedChannel();
+        ch.pipeline().addLast(new MsgDecoder());
+
+        UUID id = UUID.randomUUID();
+        TankDieMsg msg = new TankDieMsg(id, true);
+
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeInt(MsgType.TankDie.ordinal());
+        byte[] bytes = msg.toBytes();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
+
+        ch.writeInbound(buf.duplicate());
+        TankDieMsg result = ch.readInbound();
+
+        assertEquals(result.getMsgType(), MsgType.TankDie);
+        assertEquals(result.isLiving(), true);
+    }
+
+    @Test
     public void testBulletEncoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
         UUID id = UUID.randomUUID();
@@ -59,8 +97,8 @@ public class TankStateMsgCodecTest {
         assertEquals(10, result.getX());
         assertEquals(20, result.getY());
         assertEquals(id, result.getId());
-        assertEquals(Dir.DOWN,result.getDir());
-        assertEquals(Group.BAD,result.getGroup());
+        assertEquals(Dir.DOWN, result.getDir());
+        assertEquals(Group.BAD, result.getGroup());
     }
 
     @Test

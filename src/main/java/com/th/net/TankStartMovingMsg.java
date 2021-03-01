@@ -41,7 +41,7 @@ public class TankStartMovingMsg extends Msg {
     public void handle() {
         if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())) return;
         System.out.println(getMsgType().toString() + " "+ this.toString() + "\n");
-        Tank t = TankFrame.INSTANCE.getGm().findByUUID(id);
+        Tank t = TankFrame.INSTANCE.getGm().findTankByUUID(id);
         if (t != null) {
             t.setMoving(true);
             t.setX(x);
