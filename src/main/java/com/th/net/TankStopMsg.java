@@ -54,20 +54,7 @@ public class TankStopMsg extends Msg {
         } catch (IOException exception) {
             exception.printStackTrace();
         } finally {
-            if (baos != null) {
-                try {
-                    baos.close();
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-            }
-            if (dos != null) {
-                try {
-                    dos.close();
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-            }
+            outPutStreamClose(baos, dos);
         }
         return bytes;
     }

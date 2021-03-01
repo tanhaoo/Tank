@@ -1,7 +1,7 @@
 #tanks count at initialization
 initTankCount=10
 #fireStrategy
-goodFS=com.th.strategy.FourDirFireStrategy
+goodFS=com.th.strategy.DefaultFireStrategy
 badFS=com.th.strategy.DefaultFireStrategy
 #colliders
 colliders=com.th.cor.BulletTankCollider,com.th.cor.TankTankCollider,com.th.cor.BulletWallCollider,com.th.cor.TankWallCollider

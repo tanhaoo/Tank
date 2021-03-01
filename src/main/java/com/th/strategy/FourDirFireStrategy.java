@@ -1,5 +1,7 @@
 package com.th.strategy;
 
+import com.th.net.BulletNewMsg;
+import com.th.net.Client;
 import com.th.tank.*;
 
 /**
@@ -13,7 +15,7 @@ public class FourDirFireStrategy implements FireStrategy {
         int bY = t.getY() + Tank.HEIGHT / 2 - Bullet.HEIGHT / 2;
         Dir[] dirs = Dir.values();
         for (Dir dir : dirs) {
-            new Bullet(bX, bY, dir, t.getGroup());
+            sendFireMsg(new Bullet(t.getId(), bX, bY, dir, t.getGroup()));
             //t.getTf().gf.createBullet(bX, bY, dir, t.getGroup(), t.getTf());
         }
         if (t.getGroup() == Group.GOOD) new Thread(() -> new Audio("audio/tank_fire.wav"));

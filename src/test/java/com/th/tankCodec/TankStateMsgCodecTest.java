@@ -19,6 +19,51 @@ import static org.junit.Assert.assertEquals;
 public class TankStateMsgCodecTest {
 
     @Test
+    public void testBulletEncoder() {
+        EmbeddedChannel ch = new EmbeddedChannel();
+        UUID id = UUID.randomUUID();
+        BulletNewMsg msg = new BulletNewMsg(id, 10, 20, Dir.DOWN, Group.BAD);
+        ch.pipeline().addLast(new MsgEncoder());
+        ch.writeOutbound(msg);
+        ByteBuf buf = ch.readOutbound();
+
+        MsgType type = MsgType.values()[buf.readInt()];
+        int length = buf.readInt();
+        assertEquals(type, MsgType.BulletNew);
+        assertEquals(length, 32);
+        assertEquals(id, new UUID(buf.readLong(), buf.readLong()));
+        assertEquals(10, buf.readInt());
+        assertEquals(20, buf.readInt());
+        assertEquals(Dir.DOWN, Dir.values()[buf.readInt()]);
+        assertEquals(Group.BAD, Group.values()[buf.readInt()]);
+    }
+
+    @Test
+    public void testBulletDecoder() {
+        EmbeddedChannel ch = new EmbeddedChannel();
+        ch.pipeline().addLast(new MsgDecoder());
+
+        UUID id = UUID.randomUUID();
+        BulletNewMsg msg = new BulletNewMsg(id, 10, 20, Dir.DOWN, Group.BAD);
+
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeInt(MsgType.BulletNew.ordinal());
+        byte[] bytes = msg.toBytes();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
+
+        ch.writeInbound(buf.duplicate());
+        BulletNewMsg result = ch.readInbound();
+
+        assertEquals(MsgType.BulletNew, result.getMsgType());
+        assertEquals(10, result.getX());
+        assertEquals(20, result.getY());
+        assertEquals(id, result.getId());
+        assertEquals(Dir.DOWN,result.getDir());
+        assertEquals(Group.BAD,result.getGroup());
+    }
+
+    @Test
     public void testStopEncoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
         UUID id = UUID.randomUUID();
@@ -52,8 +97,8 @@ public class TankStateMsgCodecTest {
         ch.writeInbound(buf.duplicate());
         TankStopMsg result = ch.readInbound();
 
-        assertEquals(MsgType.TankStop,result.getMsgType());
-        assertEquals(true,result.isMoving());
+        assertEquals(MsgType.TankStop, result.getMsgType());
+        assertEquals(true, result.isMoving());
     }
 
     @Test

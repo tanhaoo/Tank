@@ -1,6 +1,7 @@
 package com.th.tank;
 
 import com.th.cor.TankTankCollider;
+import com.th.net.BulletNewMsg;
 import com.th.net.Client;
 import com.th.net.TankStateMsg;
 import com.th.observer.TankFireEvent;
@@ -130,10 +131,10 @@ public class Tank extends GameObject {
                 y += SPEED;
                 break;
         }
-        if (this.group == Group.BAD && random.nextInt(100) > 95) {
-            randomDir();
-            this.fire();
-        }
+//        if (this.group == Group.BAD && random.nextInt(100) > 95) {
+//            randomDir();
+//            this.fire();
+//        }
         boundsCheck();
         //update rect
         rect.x = this.x;

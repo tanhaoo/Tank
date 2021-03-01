@@ -47,6 +47,7 @@ public class TankStateMsg extends Msg {
         if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())
                 || TankFrame.INSTANCE.getGm().findByUUID(this.id) != null) return;
         System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
+        this.setGroup(Group.BAD);
         new Tank(this);
         Client.INSTANCE.send(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
     }

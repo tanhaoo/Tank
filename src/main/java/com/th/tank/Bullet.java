@@ -1,6 +1,7 @@
 package com.th.tank;
 
 import com.th.net.BulletNewMsg;
+import com.th.net.Client;
 
 import java.awt.*;
 import java.util.UUID;
@@ -19,7 +20,8 @@ public class Bullet extends GameObject {
     private Rectangle rect = new Rectangle();
     private UUID id;
 
-    public Bullet(int x, int y, Dir dir, Group group) {
+    public Bullet(UUID id, int x, int y, Dir dir, Group group) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -139,5 +141,21 @@ public class Bullet extends GameObject {
 
     public void setRect(Rectangle rect) {
         this.rect = rect;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Dir getDir() {
+        return dir;
+    }
+
+    public void setDir(Dir dir) {
+        this.dir = dir;
     }
 }
