@@ -1,9 +1,6 @@
 package com.th.tankCodec;
 
-import com.th.net.MsgType;
-import com.th.net.TankStateMsg;
-import com.th.net.TankStateMsgDecoder;
-import com.th.net.TankStateMsgEncoder;
+import com.th.net.*;
 import com.th.tank.Dir;
 import com.th.tank.Group;
 import io.netty.buffer.ByteBuf;
@@ -20,12 +17,51 @@ import static org.junit.Assert.assertEquals;
  * @date 2021/2/25 22:29
  */
 public class TankStateMsgCodecTest {
+
+    @Test
+    public void testStopEncoder() {
+        EmbeddedChannel ch = new EmbeddedChannel();
+        UUID id = UUID.randomUUID();
+        TankStopMsg msg = new TankStopMsg(id, true);
+        ch.pipeline().addLast(new MsgEncoder());
+        ch.writeOutbound(msg);
+        ByteBuf buf = ch.readOutbound();
+
+        MsgType type = MsgType.values()[buf.readInt()];
+        int length = buf.readInt();
+        boolean moving = buf.readBoolean();
+        assertEquals(type, MsgType.TankStop);
+        assertEquals(length, 17);
+        assertEquals(moving, true);
+    }
+
+    @Test
+    public void testStopDecoder() {
+        EmbeddedChannel ch = new EmbeddedChannel();
+        ch.pipeline().addLast(new MsgDecoder());
+
+        UUID id = UUID.randomUUID();
+        TankStopMsg msg = new TankStopMsg(id, true);
+
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeInt(MsgType.TankStop.ordinal());
+        byte[] bytes = msg.toBytes();
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
+
+        ch.writeInbound(buf.duplicate());
+        TankStopMsg result = ch.readInbound();
+
+        assertEquals(MsgType.TankStop,result.getMsgType());
+        assertEquals(true,result.isMoving());
+    }
+
     @Test
     public void testEncoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
         UUID id = UUID.randomUUID();
         TankStateMsg msg = new TankStateMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
-        ch.pipeline().addLast(new TankStateMsgEncoder());
+        ch.pipeline().addLast(new MsgEncoder());
         ch.writeOutbound(msg);
         ByteBuf buf = ch.readOutbound();
 
@@ -53,21 +89,21 @@ public class TankStateMsgCodecTest {
     @Test
     public void testDecoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
-        ch.pipeline().addLast(new TankStateMsgDecoder());
+        ch.pipeline().addLast(new MsgDecoder());
 
         UUID id = UUID.randomUUID();
         TankStateMsg msg = new TankStateMsg(5, 10, Dir.DOWN, true, Group.BAD, id);
 
         ByteBuf buf = Unpooled.buffer();
         buf.writeInt(MsgType.TankState.ordinal());
-        byte[] bytes=msg.toBytes();
+        byte[] bytes = msg.toBytes();
         buf.writeInt(bytes.length);
         buf.writeBytes(bytes);
 
         ch.writeInbound(buf.duplicate());
         TankStateMsg result = ch.readInbound();
 
-        assertEquals(MsgType.TankState,result.getMsgType());
+        assertEquals(MsgType.TankState, result.getMsgType());
         assertEquals(5, result.getX());
         assertEquals(10, result.getY());
         assertEquals(Dir.DOWN, result.getDir());

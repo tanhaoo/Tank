@@ -1,7 +1,6 @@
 package com.th.net;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -30,8 +29,8 @@ public class Server {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             System.out.println(ch);
                             ChannelPipeline pl = ch.pipeline();
-                            pl.addLast(new TankStateMsgEncoder())
-                                    .addLast(new TankStateMsgDecoder())
+                            pl.addLast(new MsgEncoder())
+                                    .addLast(new MsgDecoder())
                                     .addLast(new ServerChildHandler());
                         }
                     })

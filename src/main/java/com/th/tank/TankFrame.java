@@ -1,11 +1,12 @@
 package com.th.tank;
 
+import com.th.net.Client;
+import com.th.net.TankStartMovingMsg;
+import com.th.net.TankStopMsg;
 import lombok.Data;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author TanHaooo
@@ -13,11 +14,15 @@ import java.util.List;
  */
 @Data
 public class TankFrame extends Frame {
-    public static final TankFrame INSTANCE=new TankFrame();
+    public static final TankFrame INSTANCE = new TankFrame();
     boolean bL = false;
     boolean bU = false;
     boolean bR = false;
     boolean bD = false;
+    boolean oldL = false;
+    boolean oldU = false;
+    boolean oldR = false;
+    boolean oldD = false;
     static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
     GameModel gm = GameModel.getInstance();
     Tank myTank = gm.getMainTank();
@@ -54,7 +59,7 @@ public class TankFrame extends Frame {
                                        break;
                                    case KeyEvent.VK_L:
                                        gm.load();
-                                       myTank=gm.getMainTank();
+                                       myTank = gm.getMainTank();
                                        break;
                                    default:
                                        break;
@@ -86,14 +91,23 @@ public class TankFrame extends Frame {
                            }
 
                            private void setMainTankDir() {
-                               if (!bL && !bU && !bR && !bD)
+                               if (!bL && !bU && !bR && !bD) {
                                    myTank.setMoving(false);
-                               else {
+                                   Client.INSTANCE.send(new TankStopMsg(myTank));
+                               } else {
                                    myTank.setMoving(true);
                                    if (bL) myTank.setDir(Dir.LEFT);
                                    if (bU) myTank.setDir(Dir.UP);
                                    if (bR) myTank.setDir(Dir.RIGHT);
                                    if (bD) myTank.setDir(Dir.DOWN);
+                                   //用当前的方向和之前的方向作比较，如果一样则代表还是同一方向，那没有必要向服务器发送消息更正
+                                   //只有位置发生改变时才向服务器发送消息以求同步
+                                   if (!(oldL == bL && oldU == bU && oldR == bR && oldD == bD))
+                                       Client.INSTANCE.send(new TankStartMovingMsg(myTank));
+                                   oldL = bL;
+                                   oldU = bU;
+                                   oldR = bR;
+                                   oldD = bD;
                                }
                            }
                        }

@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author TanHaooo
  * @date 2021/2/25 20:37
  */
-public class TankStateMsgDecoder extends ByteToMessageDecoder {
+public class MsgDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         if (byteBuf.readableBytes() < 8) return;
@@ -31,15 +31,25 @@ public class TankStateMsgDecoder extends ByteToMessageDecoder {
         //开始消息处理
         byte[] bytes = new byte[length];
         byteBuf.readBytes(bytes);//这边就是把除了一开始读出来的消息类型和消息长度以外的消息读到这个字节数组里
-        switch (type) {
-            case TankState:
-                TankStateMsg msg = new TankStateMsg();
-                msg.parse(bytes);
-                list.add(msg);
-                break;
-            default:
-                break;
-        }
+
+        String className = "com.th.net." + type.toString() + "Msg";
+        //  System.out.println(className);
+        Msg msg = (Msg) Class.forName(className).getConstructor().newInstance();
+        //这里使用java Reflection来获得实例化对象，而不是通过new这样就不用switch case一个一个找了
+//        switch (type) {
+//            case TankState:
+//                msg = new TankStateMsg();
+//                break;
+//            case TankStartMoving:
+//                msg = new TankStateMovingMsg();
+//                break;
+//            case TankStop:
+//                msg = new TankStopMsg();
+//            default:
+//                break;
+//        }
+        msg.parse(bytes);
+        list.add(msg);
     }
     //写的时候用Encoder读的时候用Decoder
 }

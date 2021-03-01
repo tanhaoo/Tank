@@ -1,15 +1,11 @@
 package com.th.net;
 
-import com.th.tank.Tank;
 import com.th.tank.TankFrame;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  * @author TanHaooo
@@ -67,8 +63,8 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         System.out.println(ch);
         ch.pipeline()
-                .addLast(new TankStateMsgEncoder())
-                .addLast(new TankStateMsgDecoder())
+                .addLast(new MsgEncoder())
+                .addLast(new MsgDecoder())
                 .addLast(new ClientHandler());//pipeline是channel上的责任链一个一个链条
     }
 }

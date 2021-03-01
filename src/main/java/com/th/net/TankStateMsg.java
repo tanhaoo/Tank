@@ -46,7 +46,7 @@ public class TankStateMsg extends Msg {
     public void handle() {
         if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())
                 || TankFrame.INSTANCE.getGm().findByUUID(this.id) != null) return;
-        System.out.println(Client.INSTANCE.channel.toString() + "\n" + this.toString() + "\n");
+        System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
         new Tank(this);
         Client.INSTANCE.send(new TankStateMsg(TankFrame.INSTANCE.getMyTank()));
     }
@@ -77,20 +77,7 @@ public class TankStateMsg extends Msg {
         } catch (IOException exception) {
             exception.printStackTrace();
         } finally {
-            try {
-                if (baos != null) {
-                    baos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (dos != null) {
-                    dos.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            outPutStreamClose(baos, dos);
         }
         return bytes;
     }
