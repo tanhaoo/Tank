@@ -13,28 +13,32 @@ import java.util.UUID;
 @Data
 public class TankDieMsg extends Msg {
 
-    private UUID id;
-    private boolean living;
+    private UUID bulletId;
+    private UUID playerId;
 
     public TankDieMsg() {
     }
 
-    public TankDieMsg(UUID id, boolean living) {
-        this.id = id;
-        this.living = living;
+    public TankDieMsg(UUID bulletId, UUID playerId) {
+        this.bulletId = bulletId;
+        this.playerId = playerId;
     }
 
-    public TankDieMsg(Tank t) {
-        this.id = t.getId();
-        this.living = t.isLiving();
-    }
 
     @Override
     public void handle() {
-        if (TankFrame.INSTANCE.getMyTank().getId() != id) {
-            TankFrame.INSTANCE.getGm().findTankByUUID(id).setLiving(false);
-            System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
+        Bullet b = TankFrame.INSTANCE.getGm().findBulletByUUID(bulletId);
+        if (b != null) {
+            b.die();
         }
+        if (this.playerId.equals(TankFrame.INSTANCE.getMyTank().getId())) {
+            TankFrame.INSTANCE.getMyTank().die();
+        } else {
+            Tank t = TankFrame.INSTANCE.getGm().findTankByUUID(playerId);
+            if (t != null)
+                t.die();
+        }
+        System.out.println(getMsgType().toString() + " " + this.toString() + "\n");
     }
 
     @Override
@@ -43,9 +47,10 @@ public class TankDieMsg extends Msg {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         try {
-            dos.writeLong(id.getMostSignificantBits());
-            dos.writeLong(id.getLeastSignificantBits());
-            dos.writeBoolean(living);
+            dos.writeLong(bulletId.getMostSignificantBits());
+            dos.writeLong(bulletId.getLeastSignificantBits());
+            dos.writeLong(playerId.getMostSignificantBits());
+            dos.writeLong(playerId.getLeastSignificantBits());
             dos.flush();
             bytes = baos.toByteArray();
         } catch (IOException exception) {
@@ -60,8 +65,8 @@ public class TankDieMsg extends Msg {
     public void parse(byte[] bytes) {
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
         try {
-            this.id = new UUID(dis.readLong(), dis.readLong());
-            this.living = dis.readBoolean();
+            this.bulletId = new UUID(dis.readLong(), dis.readLong());
+            this.playerId = new UUID(dis.readLong(), dis.readLong());
         } catch (IOException exception) {
             exception.printStackTrace();
         } finally {

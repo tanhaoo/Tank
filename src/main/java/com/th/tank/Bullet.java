@@ -18,10 +18,11 @@ public class Bullet extends GameObject {
     private Dir dir = Dir.DOWN;
     private Group group = Group.BAD;
     private Rectangle rect = new Rectangle();
-    private UUID id;
+    private UUID playerId;
+    private UUID id = UUID.randomUUID();
 
-    public Bullet(UUID id, int x, int y, Dir dir, Group group) {
-        this.id = id;
+    public Bullet(UUID playerId, int x, int y, Dir dir, Group group) {
+        this.playerId = playerId;
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -30,7 +31,8 @@ public class Bullet extends GameObject {
     }
 
     public Bullet(BulletNewMsg msg) {
-        this.id = msg.getId();
+        this.playerId = msg.getPlayerID();
+        this.id = msg.getBulletId();
         this.x = msg.getX();
         this.y = msg.getY();
         this.dir = msg.getDir();
@@ -157,5 +159,13 @@ public class Bullet extends GameObject {
 
     public void setDir(Dir dir) {
         this.dir = dir;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
     }
 }

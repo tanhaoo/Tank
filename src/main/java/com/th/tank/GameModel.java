@@ -18,8 +18,6 @@ public class GameModel {
     private static final GameModel INSTANCE = new GameModel();
     private List<GameObject> objects = new ArrayList<>();
     private HashMap<UUID, Tank> tanks = new HashMap<>();
-    private HashMap<UUID, ArrayList<Bullet>> idBullets = new HashMap<>();
-    private ArrayList<Bullet> allBullets = new ArrayList<>();
     ColliderChain chain = new ColliderChain();
     private Tank myTank;
     private int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
@@ -155,9 +153,15 @@ public class GameModel {
         this.tanks.remove(id);
     }
 
-    public void addHashBullet(Bullet bullet) {
-        this.allBullets.add(bullet);
-        this.idBullets.put(bullet.getId(), allBullets);
+    public Bullet findBulletByUUID(UUID id) {
+        for (GameObject obj : objects
+        ) {
+            if (obj instanceof Bullet) {
+                if (((Bullet) obj).getId().equals(id))
+                    return (Bullet) obj;
+            }
+        }
+        return null;
     }
 
     public Tank findTankByUUID(UUID id) {

@@ -52,7 +52,8 @@ public class TankFrame extends Frame {
                                        bD = true;
                                        break;
                                    case KeyEvent.VK_SPACE:
-                                       myTank.handleFireKey();
+                                       if (myTank.isLiving())
+                                           myTank.handleFireKey();
                                        break;
                                    case KeyEvent.VK_S:
                                        gm.save();

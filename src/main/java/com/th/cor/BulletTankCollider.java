@@ -1,5 +1,7 @@
 package com.th.cor;
 
+import com.th.net.Client;
+import com.th.net.TankDieMsg;
 import com.th.tank.*;
 
 /**
@@ -19,6 +21,7 @@ public class BulletTankCollider implements Collider {
                 if (t.getGroup() == Group.BAD)
                     t.die();
                 b.die();
+                Client.INSTANCE.send(new TankDieMsg(b.getId(), t.getId()));
                 int eX = t.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
                 int eY = t.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
                 new Explode(eX, eY);

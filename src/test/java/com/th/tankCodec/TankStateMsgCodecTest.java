@@ -1,6 +1,7 @@
 package com.th.tankCodec;
 
 import com.th.net.*;
+import com.th.tank.Bullet;
 import com.th.tank.Dir;
 import com.th.tank.Group;
 import io.netty.buffer.ByteBuf;
@@ -21,8 +22,9 @@ public class TankStateMsgCodecTest {
     @Test
     public void testTankDieEncoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
-        UUID id = UUID.randomUUID();
-        TankDieMsg msg = new TankDieMsg(id, true);
+        UUID playerId = UUID.randomUUID();
+        UUID bulletId = UUID.randomUUID();
+        TankDieMsg msg = new TankDieMsg(bulletId, playerId);
         ch.pipeline().addLast(new MsgEncoder());
         ch.writeOutbound(msg);
         ByteBuf buf = ch.readOutbound();
@@ -30,9 +32,9 @@ public class TankStateMsgCodecTest {
         MsgType type = MsgType.values()[buf.readInt()];
         int length = buf.readInt();
         assertEquals(MsgType.TankDie, type);
-        assertEquals(17, length);
-        assertEquals(id, new UUID(buf.readLong(), buf.readLong()));
-        assertEquals(true, buf.readBoolean());
+        assertEquals(32, length);
+        assertEquals(bulletId, new UUID(buf.readLong(), buf.readLong()));
+        assertEquals(playerId, new UUID(buf.readLong(), buf.readLong()));
     }
 
     @Test
@@ -40,8 +42,9 @@ public class TankStateMsgCodecTest {
         EmbeddedChannel ch = new EmbeddedChannel();
         ch.pipeline().addLast(new MsgDecoder());
 
-        UUID id = UUID.randomUUID();
-        TankDieMsg msg = new TankDieMsg(id, true);
+        UUID playerId = UUID.randomUUID();
+        UUID bulletId = UUID.randomUUID();
+        TankDieMsg msg = new TankDieMsg(playerId, bulletId);
 
         ByteBuf buf = Unpooled.buffer();
         buf.writeInt(MsgType.TankDie.ordinal());
@@ -53,14 +56,16 @@ public class TankStateMsgCodecTest {
         TankDieMsg result = ch.readInbound();
 
         assertEquals(result.getMsgType(), MsgType.TankDie);
-        assertEquals(result.isLiving(), true);
+        assertEquals(result.getPlayerId(), bulletId);
+        assertEquals(result.getBulletId(), playerId);
     }
 
     @Test
     public void testBulletEncoder() {
         EmbeddedChannel ch = new EmbeddedChannel();
         UUID id = UUID.randomUUID();
-        BulletNewMsg msg = new BulletNewMsg(id, 10, 20, Dir.DOWN, Group.BAD);
+        UUID playerId = UUID.randomUUID();
+        BulletNewMsg msg = new BulletNewMsg(playerId, id, 10, 20, Dir.DOWN, Group.BAD);
         ch.pipeline().addLast(new MsgEncoder());
         ch.writeOutbound(msg);
         ByteBuf buf = ch.readOutbound();
@@ -68,8 +73,9 @@ public class TankStateMsgCodecTest {
         MsgType type = MsgType.values()[buf.readInt()];
         int length = buf.readInt();
         assertEquals(type, MsgType.BulletNew);
-        assertEquals(length, 32);
+        assertEquals(length, 48);
         assertEquals(id, new UUID(buf.readLong(), buf.readLong()));
+        assertEquals(playerId, new UUID(buf.readLong(), buf.readLong()));
         assertEquals(10, buf.readInt());
         assertEquals(20, buf.readInt());
         assertEquals(Dir.DOWN, Dir.values()[buf.readInt()]);
@@ -82,7 +88,8 @@ public class TankStateMsgCodecTest {
         ch.pipeline().addLast(new MsgDecoder());
 
         UUID id = UUID.randomUUID();
-        BulletNewMsg msg = new BulletNewMsg(id, 10, 20, Dir.DOWN, Group.BAD);
+        UUID playerId = UUID.randomUUID();
+        BulletNewMsg msg = new BulletNewMsg(playerId, id, 10, 20, Dir.DOWN, Group.BAD);
 
         ByteBuf buf = Unpooled.buffer();
         buf.writeInt(MsgType.BulletNew.ordinal());
@@ -96,7 +103,8 @@ public class TankStateMsgCodecTest {
         assertEquals(MsgType.BulletNew, result.getMsgType());
         assertEquals(10, result.getX());
         assertEquals(20, result.getY());
-        assertEquals(id, result.getId());
+        assertEquals(id, result.getBulletId());
+        assertEquals(playerId, result.getPlayerID());
         assertEquals(Dir.DOWN, result.getDir());
         assertEquals(Group.BAD, result.getGroup());
     }

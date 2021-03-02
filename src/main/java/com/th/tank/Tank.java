@@ -182,7 +182,6 @@ public class Tank extends GameObject {
 
     public void die() {
         this.living = false;
-        Client.INSTANCE.send(new TankDieMsg(this));
     }
 
     public boolean isLiving() {

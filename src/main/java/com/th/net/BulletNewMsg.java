@@ -16,7 +16,8 @@ import java.util.UUID;
 @Data
 public class BulletNewMsg extends Msg {
 
-    private UUID id;
+    private UUID bulletId;
+    private UUID playerID;
     private int x, y;
     private Dir dir;
     private Group group;
@@ -24,8 +25,9 @@ public class BulletNewMsg extends Msg {
     public BulletNewMsg() {
     }
 
-    public BulletNewMsg(UUID id, int x, int y, Dir dir, Group group) {
-        this.id = id;
+    public BulletNewMsg(UUID playerID, UUID id, int x, int y, Dir dir, Group group) {
+        this.playerID = playerID;
+        this.bulletId = bulletId;
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -33,7 +35,8 @@ public class BulletNewMsg extends Msg {
     }
 
     public BulletNewMsg(Bullet bullet) {
-        this.id = bullet.getId();
+        this.playerID = bullet.getPlayerId();
+        this.bulletId = bullet.getId();
         this.x = bullet.getX();
         this.y = bullet.getY();
         this.dir = bullet.getDir();
@@ -42,7 +45,7 @@ public class BulletNewMsg extends Msg {
 
     @Override
     public void handle() {
-        if (this.id.equals(TankFrame.INSTANCE.getMyTank().getId())) return;
+        if (this.playerID.equals(TankFrame.INSTANCE.getMyTank().getId())) return;
         new Bullet(this);
     }
 
@@ -52,8 +55,10 @@ public class BulletNewMsg extends Msg {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         try {
-            dos.writeLong(id.getMostSignificantBits());
-            dos.writeLong(id.getLeastSignificantBits());
+            dos.writeLong(bulletId.getMostSignificantBits());
+            dos.writeLong(bulletId.getLeastSignificantBits());
+            dos.writeLong(playerID.getMostSignificantBits());
+            dos.writeLong(playerID.getLeastSignificantBits());
             dos.writeInt(x);
             dos.writeInt(y);
             dos.writeInt(dir.ordinal());
@@ -72,7 +77,8 @@ public class BulletNewMsg extends Msg {
     public void parse(byte[] bytes) {
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
         try {
-            this.id = new UUID(dis.readLong(), dis.readLong());
+            this.bulletId = new UUID(dis.readLong(), dis.readLong());
+            this.playerID = new UUID(dis.readLong(), dis.readLong());
             this.x = dis.readInt();
             this.y = dis.readInt();
             this.dir = (Dir.values()[dis.readInt()]);
